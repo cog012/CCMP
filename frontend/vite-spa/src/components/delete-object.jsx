@@ -14,7 +14,7 @@ export default class DeleteObject extends React.Component {
     handleSubmit = event => {
         event.preventDefault();
         const objectKey = this.state.key
-        axios.post(SERVER_URL + '/deleteObject', {}, { params: { objectKey: objectKey } })
+        axios.post(SERVER_URL + '/s3/delete', {}, { params: { objectKey: objectKey } })
             .then(res => {
                 console.log(res);
                 console.log(res.data);

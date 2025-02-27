@@ -9,7 +9,7 @@ export default class MediaList extends React.Component {
 
   componentDidMount() {
     //Get media list from SERVER_URL/list after mount
-    axios.get(SERVER_URL + '/list')
+    axios.get(SERVER_URL + '/s3/list')
       .then(res => {
         const medias = res.data.Contents;
         this.setState({ medias });

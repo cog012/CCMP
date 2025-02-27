@@ -15,7 +15,6 @@ const s3Client = new S3({
 
 async function listAllObjects() {
     //list all objects in S3_BUCKET
-
     try {
         const params = {
             Bucket: process.env.S3_BUCKET
@@ -27,33 +26,11 @@ async function listAllObjects() {
     } finally {
         console.log("listAllObjects Executed")
     }
-
 }
 
-async function getUrl({ objectKey }) {
-    //currently unavailable with DO Spaces CDN
-    //get presignedUrl of an object from S3 using given objectKey
-
-    // try {
-    //     const params = {
-    //         Bucket: process.env.S3_BUCKET,
-    //         Key: objectKey
-    //     }
-    //     const url = await getSignedUrl(s3Client.getObject(params))
-    //     return url
-    //     // const data = await s3Client.getObject(params)
-    //     // return data
-    // } catch (err) {
-    //     console.error(err)
-    // } finally {
-    //     console.log("getObject Executed")
-    // }
-
-}
 
 async function getObject({ objectKey }) {
     //retrive object from S3 using given objectKey
-
     try {
         const params = {
             Bucket: process.env.S3_BUCKET,
@@ -66,7 +43,6 @@ async function getObject({ objectKey }) {
     } finally {
         console.log("getObject Executed")
     }
-
 }
 
 
@@ -94,35 +70,13 @@ async function uploadObject({ objectKey, objectBody }) {
     } finally {
         console.log("uploadObject Executed")
     }
-
-
 }
 
 
-async function putObject({ objectKey, objectBody }) {
-    //put object to S3 using given objectKey and objectBody(small files capped at 5GB)
-
-    try {
-        const params = {
-            Bucket: process.env.S3_BUCKET,
-            Key: objectKey,
-            Body: objectBody
-        }
-        const data = await s3Client.putObject(params)
-        return data
-    } catch (err) {
-        console.error(err)
-    } finally {
-        console.log("putObject Executed")
-    }
-
-
-}
 
 
 async function deleteObject({ objectKey }) {
     //delete object from S3 using given objectKey
-
     try {
         const params = {
             Bucket: process.env.S3_BUCKET,
@@ -135,10 +89,9 @@ async function deleteObject({ objectKey }) {
     } finally {
         console.log("deleteObject Executed")
     }
-
 }
 
 
 
 
-module.exports = { listAllObjects, getUrl, getObject, uploadObject, putObject, deleteObject }
+module.exports = { listAllObjects, getObject, uploadObject, deleteObject }

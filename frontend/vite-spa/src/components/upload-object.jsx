@@ -20,7 +20,7 @@ export default class UploadObject extends React.Component {
         formData.append("objectKey", objectName)
         console.log("uploading " + objectName)
 
-        axios.post(SERVER_URL + '/uploadObject', formData)
+        axios.post(SERVER_URL + '/s3/upload', formData)
             .then(res => {
                 console.log(res);
                 console.log(res.data);
