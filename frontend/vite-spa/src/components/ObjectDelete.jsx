@@ -2,7 +2,8 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL
 import React from 'react';
 import axios from 'axios';
 
-export default class DeleteObject extends React.Component {
+
+export default class ObjectDelete extends React.Component {
     state = {
         key: ''
     }

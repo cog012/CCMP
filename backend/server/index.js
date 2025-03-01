@@ -130,7 +130,7 @@ app.get('/', (req, res) => {
 
 
 //server only listen to localhost for security concern now
-app.listen(SERVER_PORT, 'localhost', () => {
+app.listen(SERVER_PORT, () => {
     console.log(`CCMP server listening on port ${SERVER_PORT}`)
 })
 

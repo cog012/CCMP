@@ -2,7 +2,7 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL
 import React from 'react';
 import axios from 'axios';
 
-export default class UploadObject extends React.Component {
+export default class ObjectUpload extends React.Component {
     state = {
         selectedObject: (null),
     }

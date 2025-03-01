@@ -38,7 +38,7 @@ router.post('/upload', (req, res) => {
             objectBody: pass
         }).then(data => {
             console.log(data)
-            res.send(`${file.originalFilename} uploaded`)
+            res.send(`SERVER RESPONSE: ${file.originalFilename} uploaded`)
         })
         return pass
     }
@@ -66,7 +66,7 @@ router.post('/delete', (req, res) => {
         objectKey: req.query.objectKey
     }).then(data => {
         console.log(data)
-        res.send(`${req.query.objectKey} deleted`)
+        res.send(`SERVER RESPONSE: ${req.query.objectKey} deleted`)
     }).catch(err => {
         res.status(500).json({
             message: err.message || 'Unexpected error occured'

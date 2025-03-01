@@ -1,16 +1,18 @@
 import './App.css'
-import MediaList from './components/media-list'
-import UploadObject from './components/upload-object'
-import DeleteObject from './components/delete-object'
+import ObjectList from './components/ObjectList'
+import ObjectUpload from './components/ObjectUpload'
+import ObjectDelete from './components/ObjectDelete'
+import Test from './components/Test'
 
 function App() {
 
   return (
     <>
       <div className="App">
-        <UploadObject />
-        <MediaList />
-        <DeleteObject />
+        <ObjectList />
+        <ObjectUpload />
+        <ObjectDelete />
+        <Test />
       </div>
     </>
   )
