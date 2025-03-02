@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
-import { loginUser, registerUser } from '../../services/mongo'
+import { loginUser, validateUser, registerUser } from '../../services/mongo'
 
 import './Login.css'
 
@@ -20,6 +20,18 @@ export default function Login({ setUser }) {
             setUser({ email: email, password: password })
         } else {
             setAlert("Login failed")
+        }
+    }
+    async function handleValidate(event) {
+        event.preventDefault()
+        if (!email) {
+            setAlert("Email required")
+        }
+        const isUserExist = await validateUser({ email: email })
+        if (isUserExist == true) {
+            setAlert("Email already registered")
+        } else {
+            setAlert("Email available")
         }
     }
     async function handleRegister(event) {
@@ -48,6 +60,7 @@ export default function Login({ setUser }) {
                 </label>
                 <div>
                     <button onClick={handleLogin}>Login</button>
+                    <button onClick={handleValidate}>Validate</button>
                     <button onClick={handleRegister}>Register</button>
                 </div>
             </form>
