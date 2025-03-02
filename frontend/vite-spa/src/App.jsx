@@ -16,7 +16,11 @@ function App() {
   const { user, setUser } = useUser()
 
   if (!user) {
-    return <Login index setUser={setUser} />
+    return (
+      <div className='wrapper'>
+        <Login index setUser={setUser} />
+      </div>
+    )
   }
 
   return (
