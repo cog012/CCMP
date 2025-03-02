@@ -1,15 +1,15 @@
 const SERVER_URL = import.meta.env.VITE_SERVER_URL
 import axios from 'axios';
 
-export function getObjectList() {
+export async function getObjectList() {
     //send GET request to server and retrieve objectList
     // axios.get(SERVER_URL + '/s3/list')
     //     .then(res => {
     //         const objectList = res.data.Contents
     //         return objectList
     //     })
-    return axios.get(SERVER_URL + '/s3/list')
-        .then(res => res.data.Contents)
+    const res = await axios.get(SERVER_URL + '/s3/list');
+    return res.data.Contents;
 }
 
 export function uploadObject({ object }) {
