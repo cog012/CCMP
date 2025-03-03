@@ -43,9 +43,12 @@ router.post('/upload', (req, res) => {
         return pass
     }
 
-    const form = formidable({
-        fileWriteStreamHandler: fileWriteStreamHandler
-    })
+    //set maxFileSize limit for the formData 
+    const formOptions = {
+        fileWriteStreamHandler: fileWriteStreamHandler,
+        maxFileSize: 2 * 1024 * 1024 * 1024
+    }
+    const form = formidable(formOptions)
     form.parse(req, async (err, fields, files) => {
         if (err) {
             res.status(500).json({
