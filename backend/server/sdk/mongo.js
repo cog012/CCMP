@@ -10,6 +10,7 @@ const imagesCollection = database.collection('images')
 const filesCollection = database.collection('files')
 
 async function loginUser({ email, password }) {
+    //authenticate the user with given email and password
     try {
         const query = { email: email, password: password }
         const matchedUser = await usersCollection.countDocuments(query)
