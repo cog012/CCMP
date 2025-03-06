@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { getObjectList, uploadObject, deleteObject } from '../services/s3'
 
+
 export default function Test() {
     const [objectList, setObjectList] = useState([])
     const [selectedObject, setSelectedObject] = useState(null)
@@ -18,15 +19,20 @@ export default function Test() {
     }, [])
 
     function handleSelect(event) {
+        event.preventDefault()
+        console.log(event.target.files[0])
         setSelectedObject(event.target.files[0])
     }
     function handleSpecifyKey(event) {
+        event.preventDefault()
         setSpecifiedKey(event.target.value)
     }
-    function handleUpload() {
+    function handleUpload(event) {
+        event.preventDefault()
         uploadObject({ object: selectedObject })
     }
-    function handleDelete() {
+    function handleDelete(event) {
+        event.preventDefault()
         deleteObject({ objectKey: specifiedKey })
     }
     function handleGet() {
@@ -35,6 +41,7 @@ export default function Test() {
 
     return (
         <div>
+            <h2>Test Page</h2>
             <ul>
                 {objectList.map(object => (<li key={object.Key}>{object.Key}</li>))}
             </ul>
@@ -43,6 +50,8 @@ export default function Test() {
                     <input type="file" onChange={handleSelect} />
                 </label>
                 <button onClick={handleUpload}>Upload</button>
+            </form>
+            <form>
                 <label>
                     Input objectKey to delete:
                     <input type="text" onChange={handleSpecifyKey} />

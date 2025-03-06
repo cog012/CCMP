@@ -1,12 +1,12 @@
 const express = require('express')
 const router = new express.Router
-const { loginUser, validateUser, createUser } = require('../sdk/mongo')
+const { authenticateUser, checkExistUser, createUser, getUserId } = require('../sdk/mongo')
 
-router.get('/login', (req, res) => {
+router.post('/login', (req, res) => {
     if (!req.query.email || !req.query.password) return res.status(400).json({ message: 'email and password required' })
     const email = req.query.email
     const password = req.query.password
-    loginUser({
+    authenticateUser({
         email: email,
         password: password
     }).then(isAuthenticated => {
@@ -16,10 +16,10 @@ router.get('/login', (req, res) => {
     })
 })
 
-router.get('/validate', (req, res) => {
+router.post('/validate', (req, res) => {
     if (!req.query.email) return res.status(400).json({ message: 'email required' })
     const email = req.query.email
-    validateUser({
+    checkExistUser({
         email: email
     }).then(isUserExist => {
         res.send({
@@ -28,11 +28,11 @@ router.get('/validate', (req, res) => {
     })
 })
 
-router.get('/register', (req, res) => {
+router.post('/register', (req, res) => {
     if (!req.query.email || !req.query.password) return res.status(400).json({ message: 'email and password required' })
     const email = req.query.email
     const password = req.query.password
-    validateUser({
+    checkExistUser({
         email: email
     }).then(isUserExist => {
         if (isUserExist == false) {

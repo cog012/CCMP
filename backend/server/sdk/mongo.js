@@ -9,7 +9,7 @@ const videosCollection = database.collection('videos')
 const imagesCollection = database.collection('images')
 const filesCollection = database.collection('files')
 
-async function loginUser({ email, password }) {
+async function authenticateUser({ email, password }) {
     //authenticate the user with given email and password
     try {
         const query = { email: email, password: password }
@@ -24,33 +24,14 @@ async function loginUser({ email, password }) {
     } catch (err) {
         console.log(err)
     } finally {
-        console.log("findUser executed")
-    }
-}
-
-async function validateUser({ email }) {
-    //check if user with specific email exists in userCollection
-    try {
-        const query = { email: email }
-        const matchedUser = await usersCollection.countDocuments(query)
-        if (matchedUser == 0) {
-            const isUserExist = false
-            return isUserExist
-        } else {
-            const isUserExist = true
-            return isUserExist
-        }
-    } catch (err) {
-        console.log(err)
-    } finally {
-        console.log("findUser executed")
+        console.log("authenticateUser executed")
     }
 }
 
 async function createUser({ email, password }) {
-    //create new user in users collection using given username and password
+    //create new user in users collection using given email and password
     try {
-        const newUser = { email: email, password: password, ismod: false }
+        const newUser = { email: email, password: password, ismod: false, issuspend: false }
         const data = await usersCollection.insertOne(newUser)
         if (data.acknowledged == true) {
             const isRegisterSuccess = true
@@ -65,6 +46,47 @@ async function createUser({ email, password }) {
         console.log("createUser executed")
     }
 
+}
+
+async function checkExistUser({ email }) {
+    //check if user with specific email exists in userCollection
+    try {
+        const query = { email: email }
+        const matchedUser = await usersCollection.countDocuments(query)
+        if (matchedUser == 0) {
+            const isUserExist = false
+            return isUserExist
+        } else {
+            const isUserExist = true
+            return isUserExist
+        }
+    } catch (err) {
+        console.log(err)
+    } finally {
+        console.log("checkExistUser executed")
+    }
+}
+
+async function getUserId({ email }) {
+    //get user _id using given email
+    try {
+        console.log(email)
+        const query = { email: email }
+        console.log(query)
+        const matchedUser = await usersCollection.findOne(query)
+        console.log(matchedUser)
+        if (matchedUser == 0) {
+            const isUserExist = false
+            return isUserExist
+        } else {
+            const isUserExist = true
+            return isUserExist
+        }
+    } catch (err) {
+        console.log(err)
+    } finally {
+        console.log("validateUser executed")
+    }
 }
 
 // async function deleteUser({ username, password }) {
@@ -113,7 +135,7 @@ async function createUser({ email, password }) {
 
 // run().catch(console.dir)
 
-module.exports = { loginUser, validateUser, createUser }
+module.exports = { authenticateUser, checkExistUser, createUser, getUserId }
 
 // var MongoClient = require('mongodb').MongoClient;
 // const url = CENTRAL_URL
