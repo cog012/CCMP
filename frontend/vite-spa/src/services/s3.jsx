@@ -12,16 +12,15 @@ export async function getObjectList() {
     return res.data.Contents;
 }
 
-export function uploadObject({ object }) {
-    //send POST request to server and pass the object
-    console.log("uploading " + object.name)
+export async function uploadObject({ objectKey, objectBody }) {
+    //send POST request to server,pass the object and info parameters
     const formData = new FormData()
-    formData.append('objectBody', object)
-    axios.post(SERVER_URL + '/s3/upload', formData)
-        .then(res => {
-            console.log(res);
-            console.log(res.data);
-        })
+    formData.append('objectBody', objectBody)
+    const res = await axios.post(SERVER_URL + '/test/upload', formData, { params: { objectKey: objectKey } })
+    return res.data.response
+    // .then(res => {
+    //     console.log(res.data);
+    // })
 }
 
 export function deleteObject({ objectKey }) {

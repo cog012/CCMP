@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
+import Upload from './Upload/Upload'
+import { Link } from 'react-router'
 import { getObjectList, uploadObject, deleteObject } from '../services/s3'
 
 
-export default function Test() {
+export default function Test({ user }) {
     const [objectList, setObjectList] = useState([])
     const [selectedObject, setSelectedObject] = useState(null)
     const [specifiedKey, setSpecifiedKey] = useState([])
@@ -42,6 +44,7 @@ export default function Test() {
     return (
         <div>
             <h2>Test Page</h2>
+            <Link to="/dashboard">To Dashboard Page</Link>
             <ul>
                 {objectList.map(object => (<li key={object.Key}>{object.Key}</li>))}
             </ul>
@@ -50,8 +53,6 @@ export default function Test() {
                     <input type="file" onChange={handleSelect} />
                 </label>
                 <button onClick={handleUpload}>Upload</button>
-            </form>
-            <form>
                 <label>
                     Input objectKey to delete:
                     <input type="text" onChange={handleSpecifyKey} />
@@ -59,6 +60,7 @@ export default function Test() {
                 <button onClick={handleDelete}>Delete</button>
                 <button onClick={handleGet}>Get</button>
             </form>
+            <Upload user={user} />
         </div>
     )
 }

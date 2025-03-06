@@ -1,41 +1,45 @@
-import React, { useState } from "react"
+import React, { useState } from 'react'
 
-import { uploadObject } from "../../services/test"
+import { mongoUpload } from "../../services/mongo"
+import { uploadObject } from "../../services/s3"
 
 export default function Upload({ user }) {
-    const [selectedObject, setSelectedObject] = useState(null)
     const [objectName, setObjectName] = useState([])
     const [objectCategory, setObjectCategory] = useState([])
     const [objectDescription, setObjectDescription] = useState([])
-    function handleSelect(event) {
-        event.preventDefault()
-        setSelectedObject(event.target.files[0])
-    }
-    function handleName(event) {
-        event.preventDefault()
-        setObjectName(event.target.value)
-    }
+    const [selectedObject, setSelectedObject] = useState(null)
+    const [response, setResponse] = useState([])
     function handleCategory(event) {
         event.preventDefault()
         console.log(event)
         setObjectCategory(event.target.value)
     }
+    function handleName(event) {
+        event.preventDefault()
+        setObjectName(event.target.value)
+    }
     function handleDescription(event) {
         event.preventDefault()
         setObjectDescription(event.target.value)
     }
-    function handleUpload(event) {
+    function handleSelect(event) {
         event.preventDefault()
-        uploadObject({ user: user, objectBody: selectedObject, objectName: objectName, objectCategory: objectCategory, objectDescription: objectDescription })
+        setSelectedObject(event.target.files[0])
+    }
+    async function handleUpload(event) {
+        event.preventDefault()
+        setResponse("Uploading to S3")
+        const newObjectId = await mongoUpload({ user: user, objectCategory: objectCategory, objectName: objectName, objectDescription: objectDescription })
+        uploadObject({ objectKey: newObjectId, objectBody: selectedObject })
+            .then(response => {
+                setResponse(response)
+            })
     }
     return (
         <div>
             <form>
                 <fieldset>
                     <legend>Upload Objects</legend>
-                    <input type="file" onChange={handleSelect} />
-                    <label>Input Object name:</label>
-                    <input type="text" onChange={handleName} />
                     <label>Select Object category:</label>
                     <select onChange={handleCategory}>
                         <option value="videos">videos</option>
@@ -43,9 +47,13 @@ export default function Upload({ user }) {
                         <option value="images">images</option>
                         <option value="files">files</option>
                     </select>
+                    <label>Input Object name:</label>
+                    <input type="text" onChange={handleName} />
                     <label>Add Object description:</label>
                     <textarea onChange={handleDescription}></textarea>
+                    <input type="file" onChange={handleSelect} />
                     <button onClick={handleUpload}>Upload</button>
+                    <h1>{response}</h1>
                 </fieldset>
             </form>
         </div>

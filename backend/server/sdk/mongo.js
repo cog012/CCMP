@@ -9,6 +9,37 @@ const videosCollection = database.collection('videos')
 const imagesCollection = database.collection('images')
 const filesCollection = database.collection('files')
 
+
+async function mongoUpload({ email, password, objectCategory, objectName, objectDescription }) {
+    try {
+        var targetCollection
+        switch (objectCategory) {
+            case 'audios':
+                targetCollection = audiosCollection
+                break
+            case 'videos':
+                targetCollection = videosCollection
+                break
+            case 'images':
+                targetCollection = imagesCollection
+                break
+            case 'files':
+                targetCollection = filesCollection
+                break
+        }
+        const query = { email: email, password: password }
+        const user = await usersCollection.findOne(query)
+        const userId = user._id
+        const newObject = { uploaderId: userId, objectName: objectName, objectDescription: objectDescription }
+        const data = await targetCollection.insertOne(newObject)
+        return data.insertedId
+    } catch (err) {
+        console.log(err)
+    } finally {
+        console.log("mongoUpload executed")
+    }
+}
+
 async function authenticateUser({ email, password }) {
     //authenticate the user with given email and password
     try {
@@ -67,27 +98,6 @@ async function checkExistUser({ email }) {
     }
 }
 
-async function getUserId({ email }) {
-    //get user _id using given email
-    try {
-        console.log(email)
-        const query = { email: email }
-        console.log(query)
-        const matchedUser = await usersCollection.findOne(query)
-        console.log(matchedUser)
-        if (matchedUser == 0) {
-            const isUserExist = false
-            return isUserExist
-        } else {
-            const isUserExist = true
-            return isUserExist
-        }
-    } catch (err) {
-        console.log(err)
-    } finally {
-        console.log("validateUser executed")
-    }
-}
 
 // async function deleteUser({ username, password }) {
 //     //delete user in users collection using given username and password
@@ -135,7 +145,7 @@ async function getUserId({ email }) {
 
 // run().catch(console.dir)
 
-module.exports = { authenticateUser, checkExistUser, createUser, getUserId }
+module.exports = { mongoUpload, authenticateUser, checkExistUser, createUser }
 
 // var MongoClient = require('mongodb').MongoClient;
 // const url = CENTRAL_URL

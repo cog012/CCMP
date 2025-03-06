@@ -8,7 +8,6 @@ import './App.css'
 import Login from './components/Login/Login'
 import Dashboard from './components/Dashboard/Dashboard'
 import Test from './components/Test'
-import Upload from './components/Upload/Upload'
 import NoPage from './components/NoPage/NoPage'
 import useUser from './hooks/useUser'
 
@@ -28,12 +27,11 @@ function App() {
 
   return (
     <div className="wrapper">
-      <h1>Application</h1>
+      <h1>Welcome to CCMP</h1>
       <BrowserRouter>
         <Routes>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/test" element={<Test />} />
-          <Route path="/upload" element={<Upload user={user} />} />
+          <Route path="/dashboard" element={<Dashboard user={user} />} />
+          <Route path="/test" element={<Test user={user} />} />
           <Route path="*" element={<NoPage />} />
         </Routes>
       </BrowserRouter>

@@ -15,3 +15,8 @@ export async function registerUser({ email, password }) {
     const res = await axios.post(SERVER_URL + '/mongo/register', {}, { params: { email: email, password: password } });
     return res.data.isRegisterSuccess
 }
+
+export async function mongoUpload({ user, objectName, objectCategory, objectDescription }) {
+    const res = await axios.post(SERVER_URL + '/mongo/upload', {}, { params: { user: user, objectCategory: objectCategory, objectName: objectName, objectDescription: objectDescription } })
+    return res.data.newObjectId
+}

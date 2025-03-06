@@ -1,6 +1,21 @@
 const express = require('express')
 const router = new express.Router
-const { authenticateUser, checkExistUser, createUser, getUserId } = require('../sdk/mongo')
+const { mongoUpload, authenticateUser, checkExistUser, createUser, getUserId } = require('../sdk/mongo')
+
+router.post('/upload', (req, res) => {
+    if (!req.query.user || !req.query.objectCategory || !req.query.objectName || !req.query.objectDescription) return res.status(400).json({ message: 'user/objectName/objectCategory/objectDescription required' })
+    const email = req.query.user.email
+    const password = req.query.user.password
+    const objectCategory = req.query.objectCategory
+    const objectName = req.query.objectName
+    const objectDescription = req.query.objectDescription
+    mongoUpload({ email: email, password: password, objectCategory: objectCategory, objectName: objectName, objectDescription: objectDescription })
+        .then(newObjectId => {
+            res.send({
+                newObjectId: newObjectId
+            })
+        })
+})
 
 router.post('/login', (req, res) => {
     if (!req.query.email || !req.query.password) return res.status(400).json({ message: 'email and password required' })
@@ -51,5 +66,6 @@ router.post('/register', (req, res) => {
         }
     })
 })
+
 
 module.exports = router

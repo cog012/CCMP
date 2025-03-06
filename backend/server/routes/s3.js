@@ -11,7 +11,7 @@ router.get('/list', (req, res) => {
     })
 })
 
-router.get('/get', async (req, res) => {
+router.get('/get', (req, res) => {
     //execute getObject() function and stream the object to client when '/get' endpoint receives get request with specified objectKey
     if (!req.query.objectKey) return res.status(400).json({ message: 'objectKey is required' })
     getObject({
@@ -31,19 +31,20 @@ router.post('/upload', (req, res) => {
     //execute uploadObject() function and stream the object to s3 when '/upload' endpoint receives post request with object embeded in formData
     //formidable fileWriteStreamHandler() function overwrite the default behavior of writing parsed failes into local file system
     //Instead the parsed file got converted into PassThrough then streamed to S3(With out the 'return' fileWriteStreamHandler() won't work)
+    if (!req.query.objectKey) return res.status(400).json({ message: 'objectKey required' })
+    const objectKey = req.query.objectKey
     function fileWriteStreamHandler(file) {
         const pass = new PassThrough()
         uploadObject({
-            objectKey: file.originalFilename,
+            objectKey: objectKey,
             objectBody: pass
         }).then(data => {
             console.log(data)
-            res.send(`SERVER RESPONSE: ${file.originalFilename} uploaded`)
+            res.send({ response: `S3 upload successful` })
         })
         return pass
     }
-
-    //set maxFileSize limit for the formData 
+    //set maxFileSize limit for the formData,2GB for now
     const formOptions = {
         fileWriteStreamHandler: fileWriteStreamHandler,
         maxFileSize: 2 * 1024 * 1024 * 1024

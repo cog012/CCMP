@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
+import Upload from '../Upload/Upload'
+import { Link } from 'react-router'
 import { getObjectList, uploadObject, deleteObject } from '../../services/s3'
 
-
-export default function Dashboard() {
+export default function Dashboard({ user }) {
     const [objectList, setObjectList] = useState([])
     const [selectedObject, setSelectedObject] = useState(null)
     const [specifiedKey, setSpecifiedKey] = useState([])
@@ -42,6 +43,7 @@ export default function Dashboard() {
     return (
         <div>
             <h2>Dashboard</h2>
+            <Link to="/test">To Test Page</Link>
             <ul>
                 {objectList.map(object => (<li key={object.Key}>{object.Key}</li>))}
             </ul>
@@ -57,6 +59,7 @@ export default function Dashboard() {
                 <button onClick={handleDelete}>Delete</button>
                 <button onClick={handleGet}>Get</button>
             </form>
+            <Upload user={user} />
         </div>
     )
 }
