@@ -27,6 +27,22 @@ router.get('/get', (req, res) => {
     })
 })
 
+router.post('/delete', (req, res) => {
+    //execute deleteObject() function and remove the target object from s3 when '/delete' endpoint receives post request with specified objectKey
+    //somehow if the target object doesnt exist it still executes and return as deleted
+    if (!req.query.objectKey) return res.status(400).json({ message: 'objectKey is required' })
+    deleteObject({
+        objectKey: req.query.objectKey
+    }).then(data => {
+        console.log(data)
+        res.send(`SERVER RESPONSE: ${req.query.objectKey} deleted`)
+    }).catch(err => {
+        res.status(500).json({
+            message: err.message || 'Unexpected error occured'
+        })
+    })
+})
+
 router.post('/upload', (req, res) => {
     //execute uploadObject() function and stream the object to s3 when '/upload' endpoint receives post request with object embeded in formData
     //formidable fileWriteStreamHandler() function overwrite the default behavior of writing parsed failes into local file system
@@ -61,22 +77,5 @@ router.post('/upload', (req, res) => {
     })
 
 })
-
-router.post('/delete', (req, res) => {
-    //execute deleteObject() function and remove the target object from s3 when '/delete' endpoint receives post request with specified objectKey
-    //somehow if the target object doesnt exist it still executes and return as deleted
-    if (!req.query.objectKey) return res.status(400).json({ message: 'objectKey is required' })
-    deleteObject({
-        objectKey: req.query.objectKey
-    }).then(data => {
-        console.log(data)
-        res.send(`SERVER RESPONSE: ${req.query.objectKey} deleted`)
-    }).catch(err => {
-        res.status(500).json({
-            message: err.message || 'Unexpected error occured'
-        })
-    })
-})
-
 
 module.exports = router

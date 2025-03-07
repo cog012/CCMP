@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import Upload from '../Upload/Upload'
 import { Link } from 'react-router'
+import Upload from '../Upload/Upload'
 import { getObjectList, uploadObject, deleteObject } from '../../services/s3'
+
+import cani from '../../../public/cani.png'
 
 export default function Dashboard({ user }) {
     const [objectList, setObjectList] = useState([])

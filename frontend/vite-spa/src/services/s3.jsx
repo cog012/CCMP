@@ -12,18 +12,28 @@ export async function getObjectList() {
     return res.data.Contents;
 }
 
+export async function getObjectStream({ objectKey }) {
+    const res = await axios.get(SERVER_URL + '/s3/get', { params: { objectKey: objectKey } })
+    return res.toWebstream
+}
+
+export function getObjectStreamUrl({ objectKey }) {
+    const res = SERVER_URL + '/s3/get?objectKey=' + objectKey
+    return res
+}
+
 export async function uploadObject({ objectKey, objectBody }) {
     //send POST request to server,pass the object and info parameters
     const formData = new FormData()
     formData.append('objectBody', objectBody)
-    const res = await axios.post(SERVER_URL + '/test/upload', formData, { params: { objectKey: objectKey } })
+    const res = await axios.post(SERVER_URL + '/s3/upload', formData, { params: { objectKey: objectKey } })
     return res.data.response
     // .then(res => {
     //     console.log(res.data);
     // })
 }
 
-export function deleteObject({ objectKey }) {
+export async function deleteObject({ objectKey }) {
     //somehow it works in traditional components but not in functional components
     //send POST request to server to delete object with matched objectKey
     console.log("deleting " + objectKey)

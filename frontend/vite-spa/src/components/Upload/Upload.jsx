@@ -39,7 +39,7 @@ export default function Upload({ user }) {
         <div>
             <form>
                 <fieldset>
-                    <legend>Upload Objects</legend>
+                    <legend>Upload Object</legend>
                     <label>Select Object category:</label>
                     <select onChange={handleCategory}>
                         <option value="videos">videos</option>
