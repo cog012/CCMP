@@ -1,7 +1,7 @@
 const SERVER_URL = import.meta.env.VITE_SERVER_URL
 import axios from 'axios';
 
-export async function getObjectList() {
+export async function s3List() {
     //send GET request to server and retrieve objectList
     // axios.get(SERVER_URL + '/s3/list')
     //     .then(res => {
@@ -12,17 +12,17 @@ export async function getObjectList() {
     return res.data.Contents;
 }
 
-export async function getObjectStream({ objectKey }) {
-    const res = await axios.get(SERVER_URL + '/s3/get', { params: { objectKey: objectKey } })
-    return res.toWebstream
-}
+// export async function getObjectStream({ objectKey }) {
+//     const res = await axios.get(SERVER_URL + '/s3/get', { params: { objectKey: objectKey } })
+//     return res.toWebstream
+// }
 
-export function getObjectStreamUrl({ objectKey }) {
+export function s3Get({ objectKey }) {
     const res = SERVER_URL + '/s3/get?objectKey=' + objectKey
     return res
 }
 
-export async function uploadObject({ objectKey, objectBody }) {
+export async function s3Upload({ objectKey, objectBody }) {
     //send POST request to server,pass the object and info parameters
     const formData = new FormData()
     formData.append('objectBody', objectBody)
@@ -33,7 +33,7 @@ export async function uploadObject({ objectKey, objectBody }) {
     // })
 }
 
-export async function deleteObject({ objectKey }) {
+export async function s3Delete({ objectKey }) {
     //somehow it works in traditional components but not in functional components
     //send POST request to server to delete object with matched objectKey
     console.log("deleting " + objectKey)

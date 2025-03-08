@@ -20,3 +20,7 @@ export async function mongoUpload({ user, objectName, objectCategory, objectDesc
     const res = await axios.post(SERVER_URL + '/mongo/upload', {}, { params: { user: user, objectCategory: objectCategory, objectName: objectName, objectDescription: objectDescription } })
     return res.data.newObjectId
 }
+
+export async function mongoList({ objectCategory }) {
+    const res = await axios.get(SERVER_URL + '/mongo/list', { params: { objectCategory: objectCategory } })
+}

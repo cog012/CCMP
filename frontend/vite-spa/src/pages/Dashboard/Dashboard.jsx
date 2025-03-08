@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router'
-import Upload from '../Upload/Upload'
-import { getObjectList, uploadObject, deleteObject } from '../../services/s3'
+import Upload from '../../components/Upload/Upload'
+import { s3List, s3Upload, s3Get, s3Delete } from '../../services/s3'
 
-import cani from '../../../public/cani.png'
 
 export default function Dashboard({ user }) {
     const [objectList, setObjectList] = useState([])
@@ -12,7 +10,7 @@ export default function Dashboard({ user }) {
 
     useEffect(() => {
         let mounted = true
-        getObjectList()
+        s3List()
             .then(res => {
                 if (mounted) {
                     setObjectList(res)
@@ -32,11 +30,11 @@ export default function Dashboard({ user }) {
     }
     function handleUpload(event) {
         event.preventDefault()
-        uploadObject({ object: selectedObject })
+        s3Upload({ object: selectedObject })
     }
     function handleDelete(event) {
         event.preventDefault()
-        deleteObject({ objectKey: specifiedKey })
+        s3Delete({ objectKey: specifiedKey })
     }
     function handleGet() {
 
@@ -44,8 +42,7 @@ export default function Dashboard({ user }) {
 
     return (
         <div>
-            <h2>Dashboard</h2>
-            <Link to="/test">To Test Page</Link>
+            <h1>Dashboard</h1>
             <ul>
                 {objectList.map(object => (<li key={object.Key}>{object.Key}</li>))}
             </ul>

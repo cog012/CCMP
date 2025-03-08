@@ -1,6 +1,12 @@
 const express = require('express')
 const router = new express.Router
-const { mongoUpload, authenticateUser, checkExistUser, createUser, getUserId } = require('../sdk/mongo')
+const { mongoList, mongoUpload, authenticateUser, checkExistUser, createUser } = require('../sdk/mongo')
+
+router.get('/list', (req, res) => {
+    if (!req.query.objectCategory) return res.status(400).json({ message: 'objectCategory required' })
+    const objectCategory = req.query.objectCategory
+    mongoList({ objectCategory: objectCategory })
+})
 
 router.post('/upload', (req, res) => {
     if (!req.query.user || !req.query.objectCategory || !req.query.objectName || !req.query.objectDescription) return res.status(400).json({ message: 'user/objectName/objectCategory/objectDescription required' })

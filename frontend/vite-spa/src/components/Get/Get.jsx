@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { getObjectStreamUrl } from '../../services/s3'
+import { s3Get } from '../../services/s3'
 
 export default function Get() {
     const [objectKey, setObjectKey] = useState([])
@@ -10,7 +10,7 @@ export default function Get() {
     }
     function handleStream(event) {
         event.preventDefault()
-        const streamUrl = getObjectStreamUrl({ objectKey: objectKey })
+        const streamUrl = s3Get({ objectKey: objectKey })
         setObjectStreamUrl(streamUrl)
     }
     return (
@@ -31,7 +31,8 @@ export default function Get() {
                     <textarea onChange={handleDescription}></textarea>
                     <input type="file" onChange={handleSelect} /> */}
                     <button onClick={handleStream}>Get Stream</button>
-                    <iframe src={objectStreamUrl} height="900" width="1600" allowFullScreen={true}></iframe>
+                    {/* <object data={objectStreamUrl}></object> */}
+                    <iframe src={objectStreamUrl} height="900" width="1600" allow="fullscreen"></iframe>
                 </fieldset>
             </form>
         </div>

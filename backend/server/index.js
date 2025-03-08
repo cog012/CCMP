@@ -26,7 +26,6 @@ app.use('/', (req, res, next) => {
 
 app.use('/s3', require('./routes/s3'))
 app.use('/mongo', require('./routes/mongo'))
-app.use('/test', require('./routes/test'))
 
 app.get('/', (req, res) => {
     res.send('Hello World!')

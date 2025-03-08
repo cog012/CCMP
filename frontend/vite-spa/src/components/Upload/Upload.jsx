@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import { mongoUpload } from "../../services/mongo"
-import { uploadObject } from "../../services/s3"
+import { s3Upload } from "../../services/s3"
 
 export default function Upload({ user }) {
     const [objectName, setObjectName] = useState([])
@@ -11,7 +11,6 @@ export default function Upload({ user }) {
     const [response, setResponse] = useState([])
     function handleCategory(event) {
         event.preventDefault()
-        console.log(event)
         setObjectCategory(event.target.value)
     }
     function handleName(event) {
@@ -30,7 +29,7 @@ export default function Upload({ user }) {
         event.preventDefault()
         setResponse("Uploading to S3")
         const newObjectId = await mongoUpload({ user: user, objectCategory: objectCategory, objectName: objectName, objectDescription: objectDescription })
-        uploadObject({ objectKey: newObjectId, objectBody: selectedObject })
+        s3Upload({ objectKey: newObjectId, objectBody: selectedObject })
             .then(response => {
                 setResponse(response)
             })
