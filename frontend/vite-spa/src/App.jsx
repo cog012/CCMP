@@ -37,13 +37,13 @@ function App() {
       <BrowserRouter>
         <Sidebar user={user} />
         <Routes>
-          <Route path="/dashboard" element={<Dashboard user={user} />} />
-          <Route path="/videos" element={<Videos user={user} />} />
-          <Route path="/audios" element={<Audios user={user} />} />
-          <Route path="/images" element={<Images user={user} />} />
-          <Route path="/files" element={<Files user={user} />} />
-          <Route path="/admin" element={<Admin user={user} />} />
-          <Route path="/test" element={<Test user={user} />} />
+          <Route path="/dashboard" element={<Dashboard user={user} category={"all"} />} />
+          <Route path="/videos" element={<Videos user={user} category={"videos"} />} />
+          <Route path="/audios" element={<Audios user={user} category={"audios"} />} />
+          <Route path="/images" element={<Images user={user} category={"images"} />} />
+          <Route path="/files" element={<Files user={user} category={"files"} />} />
+          <Route path="/admin" element={<Admin user={user} category={"all"} />} />
+          <Route path="/test" element={<Test user={user} category={"all"} />} />
           <Route path="/profile" element={<Profile user={user} />} />
           <Route path="*" element={<NoPage />} />
         </Routes>

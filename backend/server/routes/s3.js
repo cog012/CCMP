@@ -6,8 +6,10 @@ const { PassThrough } = require('stream')
 
 router.get('/list', (req, res) => {
     //execute listAllObjects() function and return json data to client when '/list' endpoint receives get request
-    listAllObjects().then(data => {
-        res.json(data)
+    listAllObjects().then(objectList => {
+        res.send({
+            objectList: objectList
+        })
     })
 })
 

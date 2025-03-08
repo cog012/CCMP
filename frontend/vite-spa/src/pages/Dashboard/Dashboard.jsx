@@ -3,7 +3,7 @@ import Upload from '../../components/Upload/Upload'
 import { s3List, s3Upload, s3Get, s3Delete } from '../../services/s3'
 
 
-export default function Dashboard({ user }) {
+export default function Dashboard({ user, category }) {
     const [objectList, setObjectList] = useState([])
     const [selectedObject, setSelectedObject] = useState(null)
     const [specifiedKey, setSpecifiedKey] = useState([])

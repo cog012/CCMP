@@ -1,8 +1,9 @@
 import React, { useState } from "react"
-import { mongoList } from "../../services/mongo"
+import { mongoObjectList } from "../../services/mongo"
 
-export default function List() {
-    const [objectCategory, setObjectCategory] = useState([])
+
+export default function List({ category }) {
+    const [objectCategory, setObjectCategory] = useState(category)
     const [objectList, setObjectList] = useState([])
     function handleCategory(event) {
         event.preventDefault()
@@ -10,13 +11,35 @@ export default function List() {
     }
     async function handleList(event) {
         event.preventDefault()
-        const newList = await mongoList({ objectCategory: objectCategory })
+        const newList = await mongoObjectList({ objectCategory: objectCategory })
+        console.log(newList)
+        setObjectList(newList)
     }
     return (
         <div>
             <form>
                 <fieldset>
                     <legend>Object List</legend>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Object ID</th>
+                                <th>Object Name</th>
+                                <th>Object Description</th>
+                                <th>Object Tag</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {objectList.map(object => (
+                                <tr key={object._id}>
+                                    <td>{object._id}</td>
+                                    <td>{object.objectName}</td>
+                                    <td>{object.objectDescription}</td>
+                                    <td>{object.tag}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                     <label>Select Object category:</label>
                     <select onChange={handleCategory}>
                         <option value="all">all</option>

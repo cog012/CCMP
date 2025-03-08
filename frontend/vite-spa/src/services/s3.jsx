@@ -9,7 +9,7 @@ export async function s3List() {
     //         return objectList
     //     })
     const res = await axios.get(SERVER_URL + '/s3/list');
-    return res.data.Contents;
+    return res.data.objectList.Contents;
 }
 
 // export async function getObjectStream({ objectKey }) {

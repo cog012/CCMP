@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb')
+const { MongoClient, ObjectId } = require('mongodb')
 const MONGO_URL = process.env.MONGO_URL
 const client = new MongoClient(MONGO_URL)
 
@@ -8,18 +8,37 @@ const audiosCollection = database.collection('audios')
 const videosCollection = database.collection('videos')
 const imagesCollection = database.collection('images')
 const filesCollection = database.collection('files')
+const tagsCollection = database.collection('tags')
 
-async function mongoList({ objectCategory }) {
+async function mongoTagUpload({ email, password, tagName }) {
     try {
-
+        const query = { email: email, password: password }
+        const user = await usersCollection.findOne(query)
+        const userId = user._id
+        const newTag = { uploaderId: userId, tagName: tagName, isSuspend: false }
+        const data = await tagsCollection.insertOne(newTag)
+        return data.insertedId
     } catch (err) {
         console.log(err)
     } finally {
-        console.log("mongoList executed")
+        console.log("mongoTagList executed")
     }
 }
 
-async function mongoUpload({ email, password, objectCategory, objectName, objectDescription }) {
+async function mongoTagList() {
+    try {
+        const filter = { isSuspend: false }
+        const projection = { _id: 1, tagName: 1 }
+        const tagList = await tagsCollection.find(filter, { projection: projection })
+        return tagList.toArray()
+    } catch (err) {
+        console.log(err)
+    } finally {
+        console.log("mongoTagList executed")
+    }
+}
+
+async function mongoObjectList({ objectCategory }) {
     try {
         var targetCollection
         switch (objectCategory) {
@@ -36,16 +55,58 @@ async function mongoUpload({ email, password, objectCategory, objectName, object
                 targetCollection = filesCollection
                 break
         }
-        const query = { email: email, password: password }
-        const user = await usersCollection.findOne(query)
-        const userId = user._id
-        const newObject = { uploaderId: userId, objectName: objectName, objectDescription: objectDescription }
+        const filter = { isSuspend: false }
+        const projection = { _id: 1, objectName: 1, objectDescription: 1 }
+        const objectList = await targetCollection.find(filter, { projection: projection })
+        return objectList.toArray()
+    } catch (err) {
+        console.log(err)
+    } finally {
+        console.log("mongoObjectList executed")
+    }
+}
+
+async function mongoObjectListAll() {
+    try {
+
+    } catch (err) {
+        console.log(err)
+    } finally {
+        console.log("mongoObjectListAll executed")
+    }
+}
+
+async function mongoObjectUpload({ email, password, objectCategory, objectName, objectDescription, tagId }) {
+    try {
+        var targetCollection
+        switch (objectCategory) {
+            case 'audios':
+                targetCollection = audiosCollection
+                break
+            case 'videos':
+                targetCollection = videosCollection
+                break
+            case 'images':
+                targetCollection = imagesCollection
+                break
+            case 'files':
+                targetCollection = filesCollection
+                break
+        }
+        const uploader = await usersCollection.findOne({ email: email, password: password })
+        const uploaderId = uploader._id
+        console.log(tagId)
+        const objectTag = await tagsCollection.findOne({ _id: new ObjectId(tagId) })
+        console.log(objectTag)
+
+        const newObject = { uploaderId: uploaderId, objectName: objectName, objectDescription: objectDescription, objectTag: objectTag, isSuspend: false }
+        console.log(newObject)
         const data = await targetCollection.insertOne(newObject)
         return data.insertedId
     } catch (err) {
         console.log(err)
     } finally {
-        console.log("mongoUpload executed")
+        console.log("mongoObjectUpload executed")
     }
 }
 
@@ -109,4 +170,4 @@ async function checkExistUser({ email }) {
 
 
 
-module.exports = { mongoList, mongoUpload, authenticateUser, checkExistUser, createUser }
+module.exports = { mongoTagUpload, mongoTagList, mongoObjectList, mongoObjectListAll, mongoObjectUpload, authenticateUser, checkExistUser, createUser }

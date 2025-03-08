@@ -16,11 +16,21 @@ export async function registerUser({ email, password }) {
     return res.data.isRegisterSuccess
 }
 
-export async function mongoUpload({ user, objectName, objectCategory, objectDescription }) {
-    const res = await axios.post(SERVER_URL + '/mongo/upload', {}, { params: { user: user, objectCategory: objectCategory, objectName: objectName, objectDescription: objectDescription } })
+export async function mongoObjectUpload({ user, objectName, objectCategory, objectDescription, tagId }) {
+    const res = await axios.post(SERVER_URL + '/mongo/objectUpload', {}, { params: { user: user, objectCategory: objectCategory, objectName: objectName, objectDescription: objectDescription, tagId: tagId } })
     return res.data.newObjectId
 }
 
-export async function mongoList({ objectCategory }) {
-    const res = await axios.get(SERVER_URL + '/mongo/list', { params: { objectCategory: objectCategory } })
+export async function mongoObjectList({ objectCategory }) {
+    const res = await axios.get(SERVER_URL + '/mongo/objectList', { params: { objectCategory: objectCategory } })
+    return res.data.objectList
+}
+
+export async function mongoTagList() {
+    const res = await axios.get(SERVER_URL + '/mongo/tagList')
+    return res.data.tagList
+}
+export async function mongoTagUpload({ user, tagName }) {
+    const res = await axios.post(SERVER_URL + '/mongo/tagUpload', {}, { params: { user: user, tagName: tagName } })
+    return res.data.newTagId
 }

@@ -1,21 +1,54 @@
 const express = require('express')
 const router = new express.Router
-const { mongoList, mongoUpload, authenticateUser, checkExistUser, createUser } = require('../sdk/mongo')
+const { mongoTagUpload, mongoTagList, mongoObjectList, mongoObjectListAll, mongoObjectUpload, authenticateUser, checkExistUser, createUser } = require('../sdk/mongo')
 
-router.get('/list', (req, res) => {
-    if (!req.query.objectCategory) return res.status(400).json({ message: 'objectCategory required' })
-    const objectCategory = req.query.objectCategory
-    mongoList({ objectCategory: objectCategory })
+router.post('/tagUpload', (req, res) => {
+    if (!req.query.user || !req.query.tagName) return res.status(400).json({ message: 'user/tagName required' })
+    const email = req.query.user.email
+    const password = req.query.user.password
+    const tagName = req.query.tagName
+    mongoTagUpload({ email: email, password: password, tagName: tagName })
+        .then(newTagId => {
+            res.send({
+                newTagId: newTagId
+            })
+        })
 })
 
-router.post('/upload', (req, res) => {
-    if (!req.query.user || !req.query.objectCategory || !req.query.objectName || !req.query.objectDescription) return res.status(400).json({ message: 'user/objectName/objectCategory/objectDescription required' })
+router.get('/tagList', (req, res) => {
+    mongoTagList()
+        .then(tagList => {
+            res.send({
+                tagList: tagList
+            })
+        })
+})
+
+router.get('/objectList', (req, res) => {
+    if (!req.query.objectCategory) return res.status(400).json({ message: 'objectCategory required' })
+    const objectCategory = req.query.objectCategory
+    if (objectCategory == 'all') {
+        mongoObjectListAll()
+    } else {
+        mongoObjectList({ objectCategory: objectCategory })
+            .then(objectList => {
+                res.send({
+                    objectList: objectList
+                })
+            })
+    }
+
+})
+
+router.post('/objectUpload', (req, res) => {
+    if (!req.query.user || !req.query.objectCategory || !req.query.objectName || !req.query.objectDescription || !req.query.tagId) return res.status(400).json({ message: 'user/objectName/objectCategory/objectDescription required' })
     const email = req.query.user.email
     const password = req.query.user.password
     const objectCategory = req.query.objectCategory
     const objectName = req.query.objectName
     const objectDescription = req.query.objectDescription
-    mongoUpload({ email: email, password: password, objectCategory: objectCategory, objectName: objectName, objectDescription: objectDescription })
+    const tagId = req.query.tagId
+    mongoObjectUpload({ email: email, password: password, objectCategory: objectCategory, objectName: objectName, objectDescription: objectDescription, tagId: tagId })
         .then(newObjectId => {
             res.send({
                 newObjectId: newObjectId
