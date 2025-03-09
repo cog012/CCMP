@@ -35,13 +35,13 @@ export default function List({ category }) {
                                     <td>{object._id}</td>
                                     <td>{object.objectName}</td>
                                     <td>{object.objectDescription}</td>
-                                    <td>{object.tag}</td>
+                                    <td>{object.objectTag.tagName}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                     <label>Select Object category:</label>
-                    <select onChange={handleCategory}>
+                    <select onChange={handleCategory} defaultValue={category}>
                         <option value="all">all</option>
                         <option value="videos">videos</option>
                         <option value="audios">audios</option>

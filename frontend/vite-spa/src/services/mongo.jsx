@@ -30,7 +30,7 @@ export async function mongoTagList() {
     const res = await axios.get(SERVER_URL + '/mongo/tagList')
     return res.data.tagList
 }
-export async function mongoTagUpload({ user, tagName }) {
-    const res = await axios.post(SERVER_URL + '/mongo/tagUpload', {}, { params: { user: user, tagName: tagName } })
+export async function mongoTagCreate({ tagName }) {
+    const res = await axios.post(SERVER_URL + '/mongo/tagCreate', {}, { params: { tagName: tagName } })
     return res.data.newTagId
 }

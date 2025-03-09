@@ -10,18 +10,15 @@ const imagesCollection = database.collection('images')
 const filesCollection = database.collection('files')
 const tagsCollection = database.collection('tags')
 
-async function mongoTagUpload({ email, password, tagName }) {
+async function mongoTagCreate({ tagName }) {
     try {
-        const query = { email: email, password: password }
-        const user = await usersCollection.findOne(query)
-        const userId = user._id
-        const newTag = { uploaderId: userId, tagName: tagName, isSuspend: false }
+        const newTag = { tagName: tagName, isSuspend: false }
         const data = await tagsCollection.insertOne(newTag)
         return data.insertedId
     } catch (err) {
         console.log(err)
     } finally {
-        console.log("mongoTagList executed")
+        console.log("mongoTagCreate executed")
     }
 }
 
@@ -42,11 +39,11 @@ async function mongoObjectList({ objectCategory }) {
     try {
         var targetCollection
         switch (objectCategory) {
-            case 'audios':
-                targetCollection = audiosCollection
-                break
             case 'videos':
                 targetCollection = videosCollection
+                break
+            case 'audios':
+                targetCollection = audiosCollection
                 break
             case 'images':
                 targetCollection = imagesCollection
@@ -56,9 +53,10 @@ async function mongoObjectList({ objectCategory }) {
                 break
         }
         const filter = { isSuspend: false }
-        const projection = { _id: 1, objectName: 1, objectDescription: 1 }
+        const projection = { _id: 1, objectName: 1, objectDescription: 1, objectTag: 1, isValid: 1 }
         const objectList = await targetCollection.find(filter, { projection: projection })
-        return objectList.toArray()
+        const objectArray = objectList.toArray()
+        return objectArray
     } catch (err) {
         console.log(err)
     } finally {
@@ -68,7 +66,14 @@ async function mongoObjectList({ objectCategory }) {
 
 async function mongoObjectListAll() {
     try {
-
+        const filter = { isSuspend: false }
+        const projection = { _id: 1, objectName: 1, objectDescription: 1, objectTag: 1, isValid: 1 }
+        const videosList = await videosCollection.find(filter, { projection: projection }).toArray()
+        const audiosList = await audiosCollection.find(filter, { projection: projection }).toArray()
+        const imagesList = await imagesCollection.find(filter, { projection: projection }).toArray()
+        const filesList = await filesCollection.find(filter, { projection: projection }).toArray()
+        const allObjectList = videosList.concat(audiosList, imagesList, filesList)
+        return allObjectList
     } catch (err) {
         console.log(err)
     } finally {
@@ -80,11 +85,11 @@ async function mongoObjectUpload({ email, password, objectCategory, objectName, 
     try {
         var targetCollection
         switch (objectCategory) {
-            case 'audios':
-                targetCollection = audiosCollection
-                break
             case 'videos':
                 targetCollection = videosCollection
+                break
+            case 'audios':
+                targetCollection = audiosCollection
                 break
             case 'images':
                 targetCollection = imagesCollection
@@ -95,11 +100,8 @@ async function mongoObjectUpload({ email, password, objectCategory, objectName, 
         }
         const uploader = await usersCollection.findOne({ email: email, password: password })
         const uploaderId = uploader._id
-        console.log(tagId)
         const objectTag = await tagsCollection.findOne({ _id: new ObjectId(tagId) })
-        console.log(objectTag)
-
-        const newObject = { uploaderId: uploaderId, objectName: objectName, objectDescription: objectDescription, objectTag: objectTag, isSuspend: false }
+        const newObject = { uploaderId: uploaderId, objectName: objectName, objectDescription: objectDescription, objectTag: objectTag, isValid: true, isSuspend: false }
         console.log(newObject)
         const data = await targetCollection.insertOne(newObject)
         return data.insertedId
@@ -170,4 +172,4 @@ async function checkExistUser({ email }) {
 
 
 
-module.exports = { mongoTagUpload, mongoTagList, mongoObjectList, mongoObjectListAll, mongoObjectUpload, authenticateUser, checkExistUser, createUser }
+module.exports = { mongoTagCreate, mongoTagList, mongoObjectList, mongoObjectListAll, mongoObjectUpload, authenticateUser, checkExistUser, createUser }

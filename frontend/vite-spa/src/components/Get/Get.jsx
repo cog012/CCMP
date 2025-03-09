@@ -18,20 +18,9 @@ export default function Get() {
             <form>
                 <fieldset>
                     <legend>Get Object</legend>
-                    {/* <label>Select Object category:</label>
-                    <select onChange={handleCategory}>
-                        <option value="videos">videos</option>
-                        <option value="audios">audios</option>
-                        <option value="images">images</option>
-                        <option value="files">files</option>
-                    </select> */}
-                    <label>Input objectKey:</label>
+                    <label>Input Object ID:</label>
                     <input type="text" onChange={handleKey} />
-                    {/* <label>Add Object description:</label>
-                    <textarea onChange={handleDescription}></textarea>
-                    <input type="file" onChange={handleSelect} /> */}
                     <button onClick={handleStream}>Get Stream</button>
-                    {/* <object data={objectStreamUrl}></object> */}
                     <iframe src={objectStreamUrl} height="900" width="1600" allow="fullscreen"></iframe>
                 </fieldset>
             </form>

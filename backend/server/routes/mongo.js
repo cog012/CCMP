@@ -1,13 +1,11 @@
 const express = require('express')
 const router = new express.Router
-const { mongoTagUpload, mongoTagList, mongoObjectList, mongoObjectListAll, mongoObjectUpload, authenticateUser, checkExistUser, createUser } = require('../sdk/mongo')
+const { mongoTagCreate, mongoTagList, mongoObjectList, mongoObjectListAll, mongoObjectUpload, authenticateUser, checkExistUser, createUser } = require('../sdk/mongo')
 
-router.post('/tagUpload', (req, res) => {
-    if (!req.query.user || !req.query.tagName) return res.status(400).json({ message: 'user/tagName required' })
-    const email = req.query.user.email
-    const password = req.query.user.password
+router.post('/tagCreate', (req, res) => {
+    if (!req.query.tagName) return res.status(400).json({ message: 'tagName required' })
     const tagName = req.query.tagName
-    mongoTagUpload({ email: email, password: password, tagName: tagName })
+    mongoTagCreate({ tagName: tagName })
         .then(newTagId => {
             res.send({
                 newTagId: newTagId
@@ -29,6 +27,11 @@ router.get('/objectList', (req, res) => {
     const objectCategory = req.query.objectCategory
     if (objectCategory == 'all') {
         mongoObjectListAll()
+            .then(objectList => {
+                res.send({
+                    objectList: objectList
+                })
+            })
     } else {
         mongoObjectList({ objectCategory: objectCategory })
             .then(objectList => {

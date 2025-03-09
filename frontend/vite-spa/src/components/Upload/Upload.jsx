@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react'
 
-import { mongoTagList, mongoTagUpload, mongoObjectUpload } from "../../services/mongo"
-import { s3Upload } from "../../services/s3"
+import { mongoTagList, mongoTagCreate, mongoObjectUpload } from '../../services/mongo'
+import { s3Upload } from '../../services/s3'
 
-export default function Upload({ user }) {
-    const [objectName, setObjectName] = useState([])
-    const [objectCategory, setObjectCategory] = useState([])
-    const [objectDescription, setObjectDescription] = useState([])
+export default function Upload({ user, category }) {
+    var defaultCategory
+    if (category == 'all') {
+        defaultCategory = 'videos'
+    } else {
+        defaultCategory = category
+    }
+    const [objectName, setObjectName] = useState(null)
+    const [objectCategory, setObjectCategory] = useState(defaultCategory)
+    const [objectDescription, setObjectDescription] = useState(null)
     const [taglist, setTaglist] = useState([])
     const [newTagName, setNewTagName] = useState([])
     const [tagId, setTagId] = useState([])
@@ -37,19 +43,19 @@ export default function Upload({ user }) {
         event.preventDefault()
         setTagId(event.target.value)
     }
-    function handleTagCreate(event) {
+    function handleTagNew(event) {
         event.preventDefault()
         setNewTagName(event.target.value)
     }
     function checkTagDuplicate(tag) {
         return tag.tagName == newTagName
     }
-    async function handleTagUpload(event) {
+    async function handleTagCreate(event) {
         event.preventDefault()
         const isDuplicate = taglist.some(checkTagDuplicate)
         if (isDuplicate == false) {
             setResponse("Uploading to mongo")
-            const newTagId = await mongoTagUpload({ user: user, tagName: newTagName })
+            const newTagId = await mongoTagCreate({ tagName: newTagName })
             const newTag = { _id: newTagId, tagName: newTagName }
             setTaglist(taglist.concat(newTag))
             setResponse("Tag Upload successful")
@@ -61,14 +67,21 @@ export default function Upload({ user }) {
         event.preventDefault()
         setobjectBody(event.target.files[0])
     }
+    function checkFieldMissing() {
+        return !objectName || !objectCategory || !objectDescription || !tagId || !objectBody
+    }
     async function handleObjectUpload(event) {
         event.preventDefault()
-        setResponse("Uploading to S3")
-        const newObjectId = await mongoObjectUpload({ user: user, objectCategory: objectCategory, objectName: objectName, objectDescription: objectDescription, tagId: tagId })
-        s3Upload({ objectKey: newObjectId, objectBody: objectBody })
-            .then(response => {
-                setResponse(response)
-            })
+        const isFieldMissing = checkFieldMissing()
+        if (isFieldMissing == false) {
+            const newObjectId = await mongoObjectUpload({ user: user, objectCategory: objectCategory, objectName: objectName, objectDescription: objectDescription, tagId: tagId })
+            s3Upload({ objectKey: newObjectId, objectBody: objectBody })
+                .then(response => {
+                    setResponse(response)
+                })
+        } else {
+            setResponse("Field Missing")
+        }
     }
     return (
         <div>
@@ -76,7 +89,7 @@ export default function Upload({ user }) {
                 <fieldset>
                     <legend>Upload Object</legend>
                     <label>Select Object category:</label>
-                    <select onChange={handleObjectCategory}>
+                    <select onChange={handleObjectCategory} defaultValue={defaultCategory}>
                         <option value="videos">videos</option>
                         <option value="audios">audios</option>
                         <option value="images">images</option>
@@ -93,8 +106,8 @@ export default function Upload({ user }) {
                         ))}
                     </select>
                     <label>Add New Tag:</label>
-                    <input onChange={handleTagCreate} />
-                    <button onClick={handleTagUpload}>Add Tag</button>
+                    <input onChange={handleTagNew} />
+                    <button onClick={handleTagCreate}>Add Tag</button>
                     <input type="file" onChange={handleObjectBody} />
                     <button onClick={handleObjectUpload}>Upload Object</button>
                     <h1>{response}</h1>
