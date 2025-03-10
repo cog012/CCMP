@@ -8,7 +8,7 @@ export default function Audios({ user, category }) {
         <div>
             <h1>Audios</h1>
             <List category={category} />
-            <Upload category={category} />
+            <Upload user={user} category={category} />
             <Get category={category} />
         </div>
     )

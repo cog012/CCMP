@@ -68,10 +68,11 @@ export default function Upload({ user, category }) {
         setobjectBody(event.target.files[0])
     }
     function checkFieldMissing() {
-        return !objectName || !objectCategory || !objectDescription || !tagId || !objectBody
+        return !objectCategory || !objectName || !objectDescription || !tagId || !objectBody
     }
     async function handleObjectUpload(event) {
         event.preventDefault()
+        setResponse("Uploading to S3")
         const isFieldMissing = checkFieldMissing()
         if (isFieldMissing == false) {
             const newObjectId = await mongoObjectUpload({ user: user, objectCategory: objectCategory, objectName: objectName, objectDescription: objectDescription, tagId: tagId })

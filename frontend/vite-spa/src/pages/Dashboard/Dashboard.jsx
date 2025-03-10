@@ -9,7 +9,7 @@ export default function Dashboard({ user, category }) {
         <div>
             <List category={category} />
             <Upload user={user} category={category} />
-            <Get />
+            <Get category={category} />
         </div>
     )
 }

@@ -1,7 +1,6 @@
 const express = require('express')
 const router = new express.Router
-const { mongoTagCreate, mongoTagList, mongoObjectList, mongoObjectListAll, mongoObjectUpload, authenticateUser, checkExistUser, createUser } = require('../sdk/mongo')
-
+const { mongoTagCreate, mongoTagList, mongoObjectList, mongoObjectListAll, mongoObjectToggleValid, mongoObjectUpload, changeCredential, authenticateUser, checkExistUser, createUser } = require('../sdk/mongo')
 router.post('/tagCreate', (req, res) => {
     if (!req.query.tagName) return res.status(400).json({ message: 'tagName required' })
     const tagName = req.query.tagName
@@ -40,11 +39,23 @@ router.get('/objectList', (req, res) => {
                 })
             })
     }
+})
 
+router.get('/objectToggleValid', (req, res) => {
+    //It's safe to allow users to mark objects as Valid/inValid so GET request are used
+    if (!req.query.objectId || !req.query.newValidity) return res.status(400).json({ message: 'objectId/newValidity required' })
+    const objectId = req.query.objectId
+    const newValidity = req.query.newValidity
+    mongoObjectToggleValid({ objectId: objectId, newValidity: newValidity })
+        .then(isModified => {
+            res.send({
+                isModified: isModified
+            })
+        })
 })
 
 router.post('/objectUpload', (req, res) => {
-    if (!req.query.user || !req.query.objectCategory || !req.query.objectName || !req.query.objectDescription || !req.query.tagId) return res.status(400).json({ message: 'user/objectName/objectCategory/objectDescription required' })
+    if (!req.query.user || !req.query.objectCategory || !req.query.objectName || !req.query.objectDescription || !req.query.tagId) return res.status(400).json({ message: 'user/objectCategory/objectName/objectDescription/tagId required' })
     const email = req.query.user.email
     const password = req.query.user.password
     const objectCategory = req.query.objectCategory
@@ -55,6 +66,20 @@ router.post('/objectUpload', (req, res) => {
         .then(newObjectId => {
             res.send({
                 newObjectId: newObjectId
+            })
+        })
+})
+
+router.post('/changeCredential', (req, res) => {
+    if (!req.query.user || !req.query.newEmail || !req.query.newPassword) return res.status(400).json({ message: 'user/newEmail/newPassword required' })
+    const email = req.query.user.email
+    const password = req.query.user.password
+    const newEmail = req.query.newEmail
+    const newPassword = req.query.newPassword
+    changeCredential({ email: email, password: password, newEmail: newEmail, newPassword: newPassword })
+        .then(isModified => {
+            res.send({
+                isModified: isModified
             })
         })
 })

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { s3Get } from '../../services/s3'
 
-export default function Get() {
+export default function Get({ category }) {
     const [objectKey, setObjectKey] = useState([])
     const [objectStreamUrl, setObjectStreamUrl] = useState([])
     function handleKey(event) {
@@ -21,7 +21,7 @@ export default function Get() {
                     <label>Input Object ID:</label>
                     <input type="text" onChange={handleKey} />
                     <button onClick={handleStream}>Get Stream</button>
-                    <iframe src={objectStreamUrl} height="900" width="1600" allow="fullscreen"></iframe>
+                    <iframe src={objectStreamUrl} height="900" width="100%" allow="fullscreen"></iframe>
                 </fieldset>
             </form>
         </div>

@@ -5,7 +5,7 @@
 
 import { BrowserRouter, Routes, Route } from 'react-router'
 import './App.css'
-import Login from './components/Login/Login'
+import Login from './pages/Login/Login'
 import Dashboard from './pages/Dashboard/Dashboard'
 import Videos from './pages/Videos/Videos'
 import Audios from './pages/Audios/Audios'
@@ -17,12 +17,14 @@ import Profile from './pages/Profile/Profile'
 import NoPage from './pages/NoPage/NoPage'
 import Sidebar from './components/Sidebar/Sidebar'
 import useUser from './hooks/useUser'
+import useAdmin from './hooks/useAdmin'
 
 
 
 
 function App() {
   const { user, setUser } = useUser()
+  const { admin, setAdmin } = useAdmin()
 
   if (!user) {
     return (
@@ -44,7 +46,7 @@ function App() {
           <Route path="/files" element={<Files user={user} category={"files"} />} />
           <Route path="/admin" element={<Admin user={user} category={"all"} />} />
           <Route path="/test" element={<Test user={user} category={"all"} />} />
-          <Route path="/profile" element={<Profile user={user} />} />
+          <Route path="/profile" element={<Profile user={user} setUser={setUser} setAdmin={setAdmin} />} />
           <Route path="*" element={<NoPage />} />
         </Routes>
       </BrowserRouter>

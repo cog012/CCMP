@@ -1,19 +1,40 @@
-import React, { useState } from "react"
-import { mongoObjectList } from "../../services/mongo"
+import React, { useState, useEffect } from "react"
+import { mongoObjectToggleValid, mongoObjectList } from "../../services/mongo"
 
 
 export default function List({ category }) {
     const [objectCategory, setObjectCategory] = useState(category)
     const [objectList, setObjectList] = useState([])
+    const [objectId, setObjectId] = useState([])
+
+    useEffect(() => {
+        handleList()
+    }, [])
+
     function handleCategory(event) {
         event.preventDefault()
         setObjectCategory(event.target.value)
     }
-    async function handleList(event) {
-        event.preventDefault()
+    async function handleList() {
         const newList = await mongoObjectList({ objectCategory: objectCategory })
-        console.log(newList)
         setObjectList(newList)
+    }
+    function checkIndex(object) {
+        return object._id == objectId
+    }
+    async function handleValid(event) {
+        event.preventDefault()
+        setObjectId(event.target.value)
+        const objectIndex = objectList.findIndex(checkIndex)
+        var targetObject = objectList[objectIndex]
+        const newValidity = targetObject.isValid ? false : true
+        console.log(newValidity)
+        const isModified = await mongoObjectToggleValid({ objectId: objectId, newValidity: newValidity })
+        if (isModified == true) {
+            targetObject.isValid = newValidity
+            const newList = objectList.toSpliced(objectIndex, targetObject)
+            setObjectList(newList)
+        }
     }
     return (
         <div>
@@ -27,6 +48,7 @@ export default function List({ category }) {
                                 <th>Object Name</th>
                                 <th>Object Description</th>
                                 <th>Object Tag</th>
+                                <th>Validity</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -36,6 +58,7 @@ export default function List({ category }) {
                                     <td>{object.objectName}</td>
                                     <td>{object.objectDescription}</td>
                                     <td>{object.objectTag.tagName}</td>
+                                    <td><button value={object._id} onClick={handleValid}>{object.isValid ? "true" : "false"}</button></td>
                                 </tr>
                             ))}
                         </tbody>
@@ -51,6 +74,6 @@ export default function List({ category }) {
                     <button onClick={handleList}>List</button>
                 </fieldset>
             </form>
-        </div>
+        </div >
     )
 }

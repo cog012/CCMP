@@ -8,7 +8,7 @@ export default function Files({ user, category }) {
         <div>
             <h1>Files</h1>
             <List category={category} />
-            <Upload category={category} />
+            <Upload user={user} category={category} />
             <Get category={category} />
         </div>
     )

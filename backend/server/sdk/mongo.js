@@ -81,6 +81,27 @@ async function mongoObjectListAll() {
     }
 }
 
+async function mongoObjectToggleValid({ objectId, newValidity }) {
+    try {
+        const filter = { _id: new ObjectId(objectId) }
+        const update = { $set: { isValid: newValidity } }
+        const videosRSP = await videosCollection.updateOne(filter, update)
+        const audiosRSP = await audiosCollection.updateOne(filter, update)
+        const imagesRSP = await imagesCollection.updateOne(filter, update)
+        const filesRSP = await filesCollection.updateOne(filter, update)
+
+        if (videosRSP.modifiedCount != 0 || audiosRSP.modifiedCount != 0 || imagesRSP.modifiedCount != 0 || filesRSP.modifiedCount != 0) {
+            console.log("modified successful")
+            const isModified = true
+            return isModified
+        }
+    } catch (err) {
+        console.log(err)
+    } finally {
+        console.log("mongoObjectToggleValid executed")
+    }
+}
+
 async function mongoObjectUpload({ email, password, objectCategory, objectName, objectDescription, tagId }) {
     try {
         var targetCollection
@@ -112,6 +133,26 @@ async function mongoObjectUpload({ email, password, objectCategory, objectName, 
     }
 }
 
+async function changeCredential({ email, password, newEmail, newPassword }) {
+    try {
+        const filter = { email: email, password: password }
+        console.log(filter)
+        const update = { $set: { email: newEmail, password: newPassword } }
+        console.log(update)
+        const data = await usersCollection.updateOne(filter, update)
+        if (data.modifiedCount == 1) {
+            console.log("modified successful")
+            const isModified = true
+            return isModified
+        }
+
+    } catch (err) {
+        console.log(err)
+    } finally {
+        console.log("changeCredential executed")
+    }
+}
+
 async function authenticateUser({ email, password }) {
     //authenticate the user with given email and password
     try {
@@ -134,7 +175,7 @@ async function authenticateUser({ email, password }) {
 async function createUser({ email, password }) {
     //create new user in users collection using given email and password
     try {
-        const newUser = { email: email, password: password, ismod: false, issuspend: false }
+        const newUser = { email: email, password: password, issuspend: false }
         const data = await usersCollection.insertOne(newUser)
         if (data.acknowledged == true) {
             const isRegisterSuccess = true
@@ -172,4 +213,4 @@ async function checkExistUser({ email }) {
 
 
 
-module.exports = { mongoTagCreate, mongoTagList, mongoObjectList, mongoObjectListAll, mongoObjectUpload, authenticateUser, checkExistUser, createUser }
+module.exports = { mongoTagCreate, mongoTagList, mongoObjectList, mongoObjectListAll, mongoObjectToggleValid, mongoObjectUpload, changeCredential, authenticateUser, checkExistUser, createUser }
