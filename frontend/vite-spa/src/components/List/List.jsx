@@ -8,14 +8,15 @@ export default function List({ category }) {
     const [objectId, setObjectId] = useState([])
 
     useEffect(() => {
-        handleList()
+        handleList(event)
     }, [])
 
     function handleCategory(event) {
         event.preventDefault()
         setObjectCategory(event.target.value)
     }
-    async function handleList() {
+    async function handleList(event) {
+        event.preventDefault()
         const newList = await mongoObjectList({ objectCategory: objectCategory })
         setObjectList(newList)
     }
@@ -25,14 +26,14 @@ export default function List({ category }) {
     async function handleValid(event) {
         event.preventDefault()
         setObjectId(event.target.value)
-        const objectIndex = objectList.findIndex(checkIndex)
-        var targetObject = objectList[objectIndex]
+        const targetIndex = objectList.findIndex(checkIndex)
+        var targetObject = objectList[targetIndex]
         const newValidity = targetObject.isValid ? false : true
         console.log(newValidity)
         const isModified = await mongoObjectToggleValid({ objectId: objectId, newValidity: newValidity })
         if (isModified == true) {
             targetObject.isValid = newValidity
-            const newList = objectList.toSpliced(objectIndex, targetObject)
+            const newList = objectList.toSpliced(targetIndex, targetObject)
             setObjectList(newList)
         }
     }
@@ -48,7 +49,7 @@ export default function List({ category }) {
                                 <th>Object Name</th>
                                 <th>Object Description</th>
                                 <th>Object Tag</th>
-                                <th>Validity</th>
+                                <th>isValid</th>
                             </tr>
                         </thead>
                         <tbody>

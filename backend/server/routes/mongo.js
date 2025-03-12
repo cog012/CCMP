@@ -1,6 +1,21 @@
 const express = require('express')
 const router = new express.Router
-const { mongoTagCreate, mongoTagList, mongoObjectList, mongoObjectListAll, mongoObjectToggleValid, mongoObjectUpload, changeCredential, authenticateUser, checkExistUser, createUser } = require('../sdk/mongo')
+const { mongoTagSuspend, mongoTagCreate, mongoTagList, mongoObjectList, mongoObjectListAll, mongoObjectListAdmin, mongoObjectToggleValid, mongoObjectUpload, mongoObjectSuspend, changeCredential, authenticateAdmin, authenticateUser, checkExistUser, createUser, listUser, suspendUser } = require('../sdk/mongo')
+
+router.post('/tagSuspend', (req, res) => {
+    if (!req.query.user || !req.query.adminToken || !req.query.tagId) return res.status(400).json({ message: 'user/adminToken/tagId required' })
+    const email = req.query.user.email
+    const password = req.query.user.password
+    const adminToken = req.query.adminToken.adminToken
+    const tagId = req.query.tagId
+    mongoTagSuspend({ email: email, password: password, adminToken: adminToken, tagId: tagId })
+        .then(isModified => {
+            res.send({
+                isModified: isModified
+            })
+        })
+})
+
 router.post('/tagCreate', (req, res) => {
     if (!req.query.tagName) return res.status(400).json({ message: 'tagName required' })
     const tagName = req.query.tagName
@@ -41,12 +56,39 @@ router.get('/objectList', (req, res) => {
     }
 })
 
+router.post('/objectListAdmin', (req, res) => {
+    if (!req.query.user || !req.query.adminToken) return res.status(400).json({ message: 'user/adminToken required' })
+    const email = req.query.user.email
+    const password = req.query.user.password
+    const adminToken = req.query.adminToken.adminToken
+    mongoObjectListAdmin({ email: email, password: password, adminToken: adminToken })
+        .then(objectList => {
+            res.send({
+                objectList: objectList
+            })
+        })
+})
+
 router.get('/objectToggleValid', (req, res) => {
     //It's safe to allow users to mark objects as Valid/inValid so GET request are used
     if (!req.query.objectId || !req.query.newValidity) return res.status(400).json({ message: 'objectId/newValidity required' })
     const objectId = req.query.objectId
     const newValidity = req.query.newValidity
     mongoObjectToggleValid({ objectId: objectId, newValidity: newValidity })
+        .then(isModified => {
+            res.send({
+                isModified: isModified
+            })
+        })
+})
+
+router.post('/objectSuspend', (req, res) => {
+    if (!req.query.user || !req.query.adminToken || !req.query.objectId) return res.status(400).json({ message: 'user/adminToken/objectId required' })
+    const email = req.query.user.email
+    const password = req.query.user.password
+    const adminToken = req.query.adminToken.adminToken
+    const objectId = req.query.objectId
+    mongoObjectSuspend({ email: email, password: password, adminToken: adminToken, objectId: objectId })
         .then(isModified => {
             res.send({
                 isModified: isModified
@@ -80,6 +122,19 @@ router.post('/changeCredential', (req, res) => {
         .then(isModified => {
             res.send({
                 isModified: isModified
+            })
+        })
+})
+
+router.post('/loginAdmin', (req, res) => {
+    if (!req.query.user || !req.query.adminToken) return res.status(400).json({ message: 'user/adminToken required' })
+    const email = req.query.user.email
+    const password = req.query.user.password
+    const adminToken = req.query.adminToken
+    authenticateAdmin({ email: email, password: password, adminToken: adminToken })
+        .then(isAuthenticated => {
+            res.send({
+                isAuthenticated: isAuthenticated
             })
         })
 })
@@ -132,6 +187,33 @@ router.post('/register', (req, res) => {
             })
         }
     })
+})
+
+router.post('/listUser', (req, res) => {
+    if (!req.query.user || !req.query.adminToken) return res.status.json({ message: 'user/adminToken required' })
+    const email = req.query.user.email
+    const password = req.query.user.password
+    const adminToken = req.query.adminToken.adminToken
+    listUser({ email: email, password: password, adminToken: adminToken })
+        .then(userList => {
+            res.send({
+                userList: userList
+            })
+        })
+})
+
+router.post('/suspendUser', (req, res) => {
+    if (!req.query.user || !req.query.adminToken || !req.query.targetUserId) return res.status.json({ message: 'user/adminToken/targetUserId required' })
+    const email = req.query.user.email
+    const password = req.query.user.password
+    const adminToken = req.query.adminToken.adminToken
+    const targetUserId = req.query.targetUserId
+    suspendUser({ email: email, password: password, adminToken: adminToken, targetUserId: targetUserId })
+        .then(isModified => {
+            res.send({
+                isModified: isModified
+            })
+        })
 })
 
 

@@ -1,12 +1,28 @@
 import React, { useState } from "react"
-import { changeCredential } from "../../services/mongo"
+import { loginAdmin, changeCredential } from "../../services/mongo"
 
-export default function Profile({ user, setUser, setAdmin }) {
+export default function Profile({ user, setUser, setAdminToken }) {
+    const [newAdminToken, setNewAdminToken] = useState([])
     const [newEmail, setNewEmail] = useState(user.email)
     const [confirmEmail, setConfirmEmail] = useState([])
     const [newPassword, setNewPassword] = useState(user.password)
     const [confirmPassword, setConfirmPassword] = useState([])
     const [response, setResponse] = useState([])
+    function handleAdminToken(event) {
+        event.preventDefault()
+        setNewAdminToken(event.target.value)
+    }
+    async function handleAdmin(event) {
+        event.preventDefault()
+        const isAuthenticated = await loginAdmin({ user: user, adminToken: newAdminToken })
+        console.log(isAuthenticated)
+        if (isAuthenticated == true) {
+            setAdminToken({ adminToken: newAdminToken })
+            setResponse("Admin login successful")
+        } else {
+            setResponse("Failed login as admin")
+        }
+    }
     function handleLogOut(event) {
         event.preventDefault()
         localStorage.clear()
@@ -59,6 +75,9 @@ export default function Profile({ user, setUser, setAdmin }) {
             <h1>Profile</h1>
             <p>Current account:</p>
             <p>{user.email}</p>
+            <p>Input Token:</p>
+            <input type="password" onChange={handleAdminToken}></input>
+            <button onClick={handleAdmin}>log as admin</button>
             <button onClick={handleLogOut}>Log Out</button>
             <form>
                 <fieldset>

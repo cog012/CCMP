@@ -1,19 +1,19 @@
 import { useState } from 'react'
 
-export default function useAdmin() {
-    const [admin, setAdmin] = useState(getAdmin())
-    function getAdmin() {
-        const adminString = localStorage.getItem('admin')
-        const admin = JSON.parse(adminString)
-        return admin
+export default function useAdminToken() {
+    const [adminToken, setAdminToken] = useState(getAdminToken())
+    function getAdminToken() {
+        const adminTokenString = localStorage.getItem('adminToken')
+        const adminToken = JSON.parse(adminTokenString)
+        return adminToken
     }
-    function saveAdmin({ admin }) {
-        const newAdmin = { admin: admin }
-        localStorage.setItem('admin', JSON.stringify(newAdmin))
-        setAdmin(newAdmin)
+    function saveAdminToken({ adminToken }) {
+        const newAdminToken = { adminToken: adminToken }
+        localStorage.setItem('adminToken', JSON.stringify(newAdminToken))
+        setAdminToken(newAdminToken)
     }
 
     return {
-        setAdmin: saveAdmin, admin: admin
+        setAdminToken: saveAdminToken, adminToken: adminToken
     }
 }

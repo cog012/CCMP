@@ -12,7 +12,6 @@ import Audios from './pages/Audios/Audios'
 import Images from './pages/Images/Images'
 import Files from './pages/Files/Files'
 import Admin from './pages/Admin/Admin'
-import Test from './pages/Test/Test'
 import Profile from './pages/Profile/Profile'
 import NoPage from './pages/NoPage/NoPage'
 import Sidebar from './components/Sidebar/Sidebar'
@@ -24,7 +23,7 @@ import useAdmin from './hooks/useAdmin'
 
 function App() {
   const { user, setUser } = useUser()
-  const { admin, setAdmin } = useAdmin()
+  const { adminToken, setAdminToken } = useAdmin()
 
   if (!user) {
     return (
@@ -44,9 +43,8 @@ function App() {
           <Route path="/audios" element={<Audios user={user} category={"audios"} />} />
           <Route path="/images" element={<Images user={user} category={"images"} />} />
           <Route path="/files" element={<Files user={user} category={"files"} />} />
-          <Route path="/admin" element={<Admin user={user} category={"all"} />} />
-          <Route path="/test" element={<Test user={user} category={"all"} />} />
-          <Route path="/profile" element={<Profile user={user} setUser={setUser} setAdmin={setAdmin} />} />
+          <Route path="/admin" element={<Admin user={user} category={"all"} adminToken={adminToken} />} />
+          <Route path="/profile" element={<Profile user={user} setUser={setUser} setAdminToken={setAdminToken} />} />
           <Route path="*" element={<NoPage />} />
         </Routes>
       </BrowserRouter>

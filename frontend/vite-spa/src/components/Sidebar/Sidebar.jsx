@@ -20,7 +20,6 @@ export default function Sidebar({ user }) {
                     <li><Link to="/images">Images</Link></li>
                     <li><Link to="/files">Files</Link></li>
                     <li><Link to="/admin">Admin</Link></li>
-                    <li><Link to="/test">Test</Link></li>
                     <li><Link to="/profile">{email}</Link></li>
                 </ul>
             </nav>
