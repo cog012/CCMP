@@ -134,13 +134,13 @@ export default function ObjectUpload({ user, defCategory }) {
                     </select>
                     <label>添加新标签:</label>
                     <input onChange={handleTagNew} />
-                    <button onClick={handleTagCreate}>添加标签</button>
+                    <button type="button" onClick={handleTagCreate}>添加标签</button>
                     <label>
                         <input type="checkbox" checked={isPremium} onChange={handlePremium} />
                         设为VIP限定
                     </label>
                     <input type="file" onChange={handleObjectBody} />
-                    <button onClick={handleObjectUpload}>上传</button>
+                    <button type="button" onClick={handleObjectUpload}>上传</button>
                     <h2>{alert}</h2>
                 </fieldset>
             </form>

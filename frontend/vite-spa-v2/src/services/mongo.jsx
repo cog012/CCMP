@@ -77,6 +77,17 @@ export async function objectUploadPremium({ user, category, name, description, t
     return res.data.newObjectId
 }
 
+export async function objectSetPremium({ user, admin, targetObjectId }) {
+    const res = await axios.post(SERVER_URL + '/mongo/objectSetPremium', {}, { params: { user: user, admin: admin, targetObjectId: targetObjectId } })
+    return res.data.isModified
+}
+
+export async function objectUnSetPremium({ user, admin, targetObjectId }) {
+    const res = await axios.post(SERVER_URL + '/mongo/objectUnSetPremium', {}, { params: { user: user, admin: admin, targetObjectId: targetObjectId } })
+    return res.data.isModified
+}
+
+
 export async function objectSuspend({ user, admin, targetObjectId }) {
     const res = await axios.post(SERVER_URL + '/mongo/objectSuspend', {}, { params: { user: user, admin: admin, targetObjectId: targetObjectId } })
     return res.data.isModified

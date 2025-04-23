@@ -289,7 +289,7 @@ async function objectUploadPremium({ email, password, category, name, descriptio
         const uploaderId = uploader._id
         const tag = await tagsCollection.findOne({ _id: new ObjectId(tagId) })
         const uploadDate = new Date()
-        const newObject = { uploaderId: uploaderId, category: category, name: name, description: description, tag: tag, uploadDate: uploadDate, lastUpdate: uploadDate, isPremium: false, isSuspend: false }
+        const newObject = { uploaderId: uploaderId, category: category, name: name, description: description, tag: tag, uploadDate: uploadDate, lastUpdate: uploadDate, isPremium: true, isSuspend: false }
         console.log(newObject)
         const data = await objectsCollection.insertOne(newObject)
         return data.insertedId
@@ -297,6 +297,48 @@ async function objectUploadPremium({ email, password, category, name, descriptio
         console.log(err)
     } finally {
         console.log("objectUploadPremium executed")
+    }
+}
+
+async function objectSetPremium({ targetObjectId }) {
+    try {
+        const filter = { _id: new ObjectId(targetObjectId) }
+        const lastUpdate = new Date()
+        const update = { $set: { isPremium: true, lastUpdate: lastUpdate } }
+        console.log("set premium:" + targetObjectId)
+        const data = await objectsCollection.updateOne(filter, update)
+        if (data.modifiedCount == 0) {
+            const isModified = false
+            return isModified
+        } else {
+            const isModified = true
+            return isModified
+        }
+    } catch (err) {
+        console.log(err)
+    } finally {
+        console.log("objectSetPremium executed")
+    }
+}
+
+async function objectUnSetPremium({ targetObjectId }) {
+    try {
+        const filter = { _id: new ObjectId(targetObjectId) }
+        const lastUpdate = new Date()
+        const update = { $set: { isPremium: false, lastUpdate: lastUpdate } }
+        console.log("Unset premium:" + targetObjectId)
+        const data = await objectsCollection.updateOne(filter, update)
+        if (data.modifiedCount == 0) {
+            const isModified = false
+            return isModified
+        } else {
+            const isModified = true
+            return isModified
+        }
+    } catch (err) {
+        console.log(err)
+    } finally {
+        console.log("objectSetPremium executed")
     }
 }
 
@@ -522,4 +564,4 @@ async function tagListAdmin({ }) {
 
 
 
-module.exports = { userRegister, userValidate, userAuth, userAuthPremium, userAuthAdmin, userInfoGet, userAliasUpdate, userEmailUpdate, userPasswordUpdate, userList, userListAdmin, userSuspend, userUnSuspend, objectUpload, objectUploadPremium, objectSuspend, objectUnSuspend, objectList, objectListPremium, objectListAdmin, tagCreate, tagSuspend, tagUnSuspend, tagList, tagListAdmin }
+module.exports = { userRegister, userValidate, userAuth, userAuthPremium, userAuthAdmin, userInfoGet, userAliasUpdate, userEmailUpdate, userPasswordUpdate, userList, userListAdmin, userSuspend, userUnSuspend, objectUpload, objectUploadPremium, objectSetPremium, objectUnSetPremium, objectSuspend, objectUnSuspend, objectList, objectListPremium, objectListAdmin, tagCreate, tagSuspend, tagUnSuspend, tagList, tagListAdmin }

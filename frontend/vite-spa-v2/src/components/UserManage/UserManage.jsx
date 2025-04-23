@@ -60,7 +60,7 @@ export default function UserManage({ user, admin }) {
                                 <th>昵称</th>
                                 <th>注册时间</th>
                                 <th>最后更新</th>
-                                <th>封禁状态</th>
+                                <th>状态</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -71,7 +71,7 @@ export default function UserManage({ user, admin }) {
                                     <td>{user.alias}</td>
                                     <td>{user.regDate}</td>
                                     <td>{user.lastUpdate}</td>
-                                    <td>{user.isSuspend ? "true" : "false"}</td>
+                                    <td>{user.isSuspend ? "封禁中" : "正常"}</td>
                                 </tr>
                             ))}
                         </tbody>

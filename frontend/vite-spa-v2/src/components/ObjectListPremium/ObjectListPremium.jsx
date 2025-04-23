@@ -53,7 +53,7 @@ export default function ObjectListPremium({ user, premium, defCategory }) {
                                     <td>{object.tag.tagName}</td>
                                     <td>{object.uploadDate}</td>
                                     <td>{object.lastUpdate}</td>
-                                    <td>{object.isPremium ? "true" : "false"}</td>
+                                    <td>{object.isPremium ? "是" : "否"}</td>
                                 </tr>
                             ))}
                         </tbody>

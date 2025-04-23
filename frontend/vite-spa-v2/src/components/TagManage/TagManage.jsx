@@ -13,7 +13,7 @@ export default function TagManage({ user, admin }) {
         setList(newTagList)
     }
 
-    function handleTargeTagId(event) {
+    function handleTargetTagId(event) {
         event.preventDefault()
         setTargetTagId(event.target.value)
     }
@@ -60,7 +60,7 @@ export default function TagManage({ user, admin }) {
                             <tr>
                                 <th>标签ID</th>
                                 <th>标签名称</th>
-                                <th>封禁状态</th>
+                                <th>状态</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -68,14 +68,14 @@ export default function TagManage({ user, admin }) {
                                 <tr key={tag._id}>
                                     <td>{tag._id}</td>
                                     <td>{tag.tagName}</td>
-                                    <td>{tag.isSuspend ? "true" : "false"}</td>
+                                    <td>{tag.isSuspend ? "封禁中" : "正常"}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                     <button onClick={handleTagList}>获取标签列表</button>
                     <label>输入标签ID:</label>
-                    <input onChange={handleTargeTagId} />
+                    <input onChange={handleTargetTagId} />
                     <button onClick={handleTargetTagSuspend}>封禁标签</button>
                     <button onClick={handleTargetTagUnSuspend}>解封标签</button>
                     <h2>{alert}</h2>

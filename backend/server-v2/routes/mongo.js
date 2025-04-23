@@ -1,6 +1,6 @@
 const express = require('express')
 const router = new express.Router
-const { userRegister, userValidate, userAuth, userAuthPremium, userAuthAdmin, userInfoGet, userAliasUpdate, userEmailUpdate, userPasswordUpdate, userList, userListAdmin, userSuspend, userUnSuspend, objectUpload, objectUploadPremium, objectSuspend, objectUnSuspend, objectList, objectListPremium, objectListAdmin, tagCreate, tagSuspend, tagUnSuspend, tagList, tagListAdmin } = require('../sdk/mongo')
+const { userRegister, userValidate, userAuth, userAuthPremium, userAuthAdmin, userInfoGet, userAliasUpdate, userEmailUpdate, userPasswordUpdate, userList, userListAdmin, userSuspend, userUnSuspend, objectUpload, objectUploadPremium, objectSetPremium, objectUnSetPremium, objectSuspend, objectUnSuspend, objectList, objectListPremium, objectListAdmin, tagCreate, tagSuspend, tagUnSuspend, tagList, tagListAdmin } = require('../sdk/mongo')
 
 
 router.post('/userRegister', (req, res) => {
@@ -254,6 +254,52 @@ router.post('/objectUploadPremium', (req, res) => {
         })
 })
 
+router.post('/objectSetPremium', (req, res) => {
+    if (!req.query.user || !req.query.admin || !req.query.targetObjectId) return res.status(400).json({ message: 'user/admin/targetObjectId required' })
+    const email = req.query.user.email
+    const password = req.query.user.password
+    const adminToken = req.query.admin.adminToken
+    const targetObjectId = req.query.targetObjectId
+    userAuthAdmin({
+        email: email,
+        password: password,
+        adminToken: adminToken,
+    }).then(isAuthenticated => {
+        if (isAuthenticated == true) {
+            objectSetPremium({
+                targetObjectId: targetObjectId
+            }).then(isModified => {
+                res.send({
+                    isModified: isModified
+                })
+            })
+        }
+    })
+})
+
+router.post('/objectUnSetPremium', (req, res) => {
+    if (!req.query.user || !req.query.admin || !req.query.targetObjectId) return res.status(400).json({ message: 'user/admin/targetObjectId required' })
+    const email = req.query.user.email
+    const password = req.query.user.password
+    const adminToken = req.query.admin.adminToken
+    const targetObjectId = req.query.targetObjectId
+    userAuthAdmin({
+        email: email,
+        password: password,
+        adminToken: adminToken,
+    }).then(isAuthenticated => {
+        if (isAuthenticated == true) {
+            objectUnSetPremium({
+                targetObjectId: targetObjectId
+            }).then(isModified => {
+                res.send({
+                    isModified: isModified
+                })
+            })
+        }
+    })
+})
+
 router.post('/objectSuspend', (req, res) => {
     if (!req.query.user || !req.query.admin || !req.query.targetObjectId) return res.status(400).json({ message: 'user/admin/targetObjectId required' })
     const email = req.query.user.email
@@ -299,7 +345,6 @@ router.post('/objectUnSuspend', (req, res) => {
         }
     })
 })
-
 
 router.post('/objectList', (req, res) => {
     if (!req.query.category) return res.status(400).json({ message: 'category required' })
